@@ -1,0 +1,44 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "b8255d3c532038bd16573a73e95b00b8c0bd7a0f72fc006e9454d6eb62a90ea2"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.7"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "ffmpeg-python": {
+            "hashes": [
+                "sha256:65225db34627c578ef0e11c8b1eb528bb35e024752f6f10b78c011f6f64c4127",
+                "sha256:ac441a0404e053f8b6a1113a77c0f452f1cfc62f6344a769475ffdc0f56c23c5"
+            ],
+            "index": "pypi",
+            "version": "==0.2.0"
+        },
+        "future": {
+            "hashes": [
+                "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"
+            ],
+            "markers": "python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "version": "==0.18.2"
+        },
+        "youtube-dl": {
+            "hashes": [
+                "sha256:19d8529f1275dfa6726f0cf144fe2da1f5800e3c1ef1b3a963c2e183262955d1",
+                "sha256:1a216c0172b145e7231e8f87f66dc914dce996f993920857b77996fa04e6290c"
+            ],
+            "index": "pypi",
+            "version": "==2021.1.8"
+        }
+    },
+    "develop": {}
+}
