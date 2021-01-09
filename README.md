@@ -2,6 +2,10 @@
 Quick and dirty Panopto downloader
 
 ## Usage
+Note: [`ffmpeg`](https://ffmpeg.org/) and `ffprobe` must be available in `PATH` for the script to work.
+
+Note: the specified URLs will be placed side-by-side into a single video, playing simultaneously;
+the inputs will be stacked _horizontally_ in order of their appearance on the command-line.
 
 ```
 panopto_dl.py [-h]
