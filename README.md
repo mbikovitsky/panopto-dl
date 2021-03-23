@@ -7,6 +7,10 @@ Note: [`ffmpeg`](https://ffmpeg.org/) and `ffprobe` must be available in `PATH` 
 Note: the specified URLs will be placed side-by-side into a single video, playing simultaneously;
 the inputs will be stacked _horizontally_ in order of their appearance on the command-line.
 
+Note: if only a single URL is given, it will be downloaded and moved to the specified location without
+any further processing; if the target filename's extension does not match the actual downloaded content,
+the correct extension will be appended.
+
 ```
 panopto_dl.py [-h]
               [--preset {ultrafast,superfast,veryfast,faster,fast,medium,slow,slower,veryslow,placebo}]

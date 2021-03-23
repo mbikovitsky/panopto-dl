@@ -64,7 +64,7 @@ def main():
     assert len(video_files) >= 1
 
     if len(video_files) == 1:
-        shutil.move(video_files[0], args.output_filename)
+        move(video_files[0], args.output_filename)
         return
 
     merge(
@@ -92,6 +92,15 @@ def download(urls: Iterable[str], output_dir: str) -> Iterator[str]:
             info = ydl.extract_info(url)
             filename = ydl.prepare_filename(info)
             yield filename
+
+
+def move(source: str, destination: str):
+    source_ext = os.path.splitext(source)[1]
+    destination_ext = os.path.splitext(destination)[1]
+    if source_ext.lower() == destination_ext.lower():
+        shutil.move(source, destination)
+    else:
+        shutil.move(source, destination + source_ext)
 
 
 def merge(
