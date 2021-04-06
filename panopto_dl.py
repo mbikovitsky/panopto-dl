@@ -4,20 +4,16 @@
 import argparse
 import os
 import os.path
+import posixpath
 import shutil
 import sys
-from typing import (
-    Any,
-    Dict,
-    Iterable,
-    Iterator,
-    Mapping,
-    Optional,
-    Tuple,
-)
+import urllib.parse
+import urllib.request
+from typing import Any, Dict, Iterable, Iterator, Mapping, Optional, Tuple
 
 import ffmpeg
 import youtube_dl
+from tqdm import tqdm
 
 
 class VideoFile:
@@ -82,16 +78,52 @@ def main():
 
 
 def download(urls: Iterable[str], output_dir: str) -> Iterator[str]:
+    for url in urls:
+        url_filename = filename_from_url(url)
+        if is_playlist_file(url_filename):
+            filename = download_playlist(url, output_dir)
+        else:
+            filename = os.path.join(output_dir, url_filename)
+            download_file(url, filename)
+        yield filename
+
+
+def filename_from_url(url: str) -> str:
+    path = urllib.parse.urlparse(url).path
+    return posixpath.basename(path)
+
+
+def is_playlist_file(filename: str) -> bool:
+    _, extension = posixpath.splitext(filename)
+    return extension.lower() == ".m3u8"
+
+
+def download_playlist(url: str, output_dir: str) -> str:
     with youtube_dl.YoutubeDL(
         {
             "restrictfilenames": True,
             "outtmpl": os.path.join(output_dir, "%(title)s-%(id)s.%(ext)s"),
         }
     ) as ydl:
-        for url in urls:
-            info = ydl.extract_info(url)
-            filename = ydl.prepare_filename(info)
-            yield filename
+        info = ydl.extract_info(url)
+        filename = ydl.prepare_filename(info)
+        return filename
+
+
+def download_file(url: str, output_filename: str):
+    progress_bar: Optional[tqdm] = None
+    try:
+
+        def reporthook(blocks_transferred: int, block_size: int, total_size: int):
+            nonlocal progress_bar
+            if progress_bar is None:
+                progress_bar = tqdm(total=total_size, unit="B", unit_scale=True)
+            progress_bar.update(block_size)
+
+        urllib.request.urlretrieve(url, output_filename, reporthook)
+    finally:
+        if progress_bar is not None:
+            progress_bar.close()
 
 
 def move(source: str, destination: str):
@@ -127,7 +159,7 @@ def merge(
         vcodec="libx264",
         crf=crf,
         preset=preset,
-        **final_audio_params
+        **final_audio_params,
     )
 
     output_stream.run()

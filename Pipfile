@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 ffmpeg-python = "*"
 youtube-dl = "*"
+tqdm = "*"
 
 [requires]
 python_version = "3.7"
