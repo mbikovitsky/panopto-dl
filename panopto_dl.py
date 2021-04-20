@@ -56,12 +56,14 @@ def main():
 
     output_dir = os.path.dirname(os.path.abspath(args.output_filename))
 
-    video_files = tuple(download(args.playlists, output_dir))
+    if args.keep_originals or len(args.playlists) == 1:
+        video_files = tuple(download(args.playlists, output_dir))
+        if len(video_files) == 1:
+            move(video_files[0], args.output_filename)
+            return
+    else:
+        video_files = tuple(get_final_urls(args.playlists))
     assert len(video_files) >= 1
-
-    if len(video_files) == 1:
-        move(video_files[0], args.output_filename)
-        return
 
     merge(
         video_files,
@@ -69,12 +71,6 @@ def main():
         args.crf,
         args.preset,
     )
-
-    if args.keep_originals:
-        return
-
-    for filename in video_files:
-        os.remove(filename)
 
 
 def download(urls: Iterable[str], output_dir: str) -> Iterator[str]:
@@ -86,6 +82,22 @@ def download(urls: Iterable[str], output_dir: str) -> Iterator[str]:
             filename = os.path.join(output_dir, url_filename)
             download_file(url, filename)
         yield filename
+
+
+def get_final_urls(urls: Iterable[str]) -> Iterator[str]:
+    for url in urls:
+        url_filename = filename_from_url(url)
+        if is_playlist_file(url_filename):
+            final_url = get_playlist_final_url(url)
+        else:
+            final_url = url
+        yield final_url
+
+
+def get_playlist_final_url(url: str) -> str:
+    with youtube_dl.YoutubeDL() as ydl:
+        info = ydl.extract_info(url, download=False)
+        return info["url"]
 
 
 def filename_from_url(url: str) -> str:
