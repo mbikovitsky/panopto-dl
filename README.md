@@ -1,18 +1,29 @@
 # panopto-dl
+
 Quick and dirty Panopto downloader
 
+## What does this do?
+
+Given a list of URLs to M3U8 playlists or video files, this script places them
+side-by-side into a single video, playing simultaneously; the inputs are stacked
+_horizontally_ in order of their appearance on the command-line.
+
+If only a single URL is given, it will be downloaded and moved to the specified location
+without any further processing; in this case, if the target filename's extension does
+not match the actual downloaded content, the correct extension will be appended.
+
+## Installation
+
+Run `pipenv install` to create a virtualenv for the script.
+
+[`ffmpeg`](https://ffmpeg.org/) and `ffprobe` must be available in `PATH` for the script to work.
+
 ## Usage
-Note: [`ffmpeg`](https://ffmpeg.org/) and `ffprobe` must be available in `PATH` for the script to work.
 
-Note: the specified URLs will be placed side-by-side into a single video, playing simultaneously;
-the inputs will be stacked _horizontally_ in order of their appearance on the command-line.
-
-Note: if only a single URL is given, it will be downloaded and moved to the specified location without
-any further processing; if the target filename's extension does not match the actual downloaded content,
-the correct extension will be appended.
+Note: to run the code inside the virtualenv, use `pipenv run python panopto_dl.py [ARGUMENTS]`.
 
 ```
-panopto_dl.py [-h]
+panopto_dl.py [-h] [--x265]
               [--preset {ultrafast,superfast,veryfast,faster,fast,medium,slow,slower,veryslow,placebo}]
               [--crf CRF] [--keep-originals]
               output_filename playlists [playlists ...]
@@ -23,8 +34,17 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  --x265                Use x265 instead of x264 (default: False)
   --preset {ultrafast,superfast,veryfast,faster,fast,medium,slow,slower,veryslow,placebo}
-                        x264 preset (default: medium)
-  --crf CRF             x264 CRF value (default: 23)
+                        x264/x265 preset (default: medium)
+  --crf CRF             x264/x265 CRF value (default: 23)
   --keep-originals      Keep original video files (default: False)
 ```
+
+## Tips
+
+For large output resolutions you may want to try encoding using x265. Passing
+`--x265 --crf 28` [should][1] provide the same quality as the default settings,
+at half the file size.
+
+[1]: https://trac.ffmpeg.org/wiki/Encode/H.265 "Encode/H.265 - FFmpeg"

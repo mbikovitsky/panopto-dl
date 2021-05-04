@@ -70,6 +70,7 @@ def main():
         args.output_filename,
         args.crf,
         args.preset,
+        args.x265,
     )
 
 
@@ -152,6 +153,7 @@ def merge(
     output_filename: str,
     crf: int,
     preset: str,
+    x265: bool,
 ):
     inputs = tuple(VideoFile(filename) for filename in video_files)
 
@@ -168,7 +170,7 @@ def merge(
     output_stream = ffmpeg.output(
         *final_streams,
         output_filename,
-        vcodec="libx264",
+        vcodec="libx265" if x265 else "libx264",
         crf=crf,
         preset=preset,
         **final_audio_params,
@@ -220,6 +222,8 @@ def parse_command_line() -> argparse.Namespace:
     parser.add_argument("output_filename", help="Path to the output file")
     parser.add_argument("playlists", nargs="+", help="URLs of m3u8 playlists to merge")
 
+    parser.add_argument("--x265", action="store_true", help="Use x265 instead of x264")
+
     presets = [
         "ultrafast",
         "superfast",
@@ -233,10 +237,10 @@ def parse_command_line() -> argparse.Namespace:
         "placebo",
     ]
     parser.add_argument(
-        "--preset", choices=presets, default="medium", help="x264 preset"
+        "--preset", choices=presets, default="medium", help="x264/x265 preset"
     )
 
-    parser.add_argument("--crf", type=int, default=23, help="x264 CRF value")
+    parser.add_argument("--crf", type=int, default=23, help="x264/x265 CRF value")
 
     parser.add_argument(
         "--keep-originals", action="store_true", help="Keep original video files"
