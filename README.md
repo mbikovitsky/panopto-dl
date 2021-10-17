@@ -18,6 +18,12 @@ Run `pipenv install` to create a virtualenv for the script.
 
 [`ffmpeg`](https://ffmpeg.org/) and `ffprobe` must be available in `PATH` for the script to work.
 
+_Note_: the Pipfile requires Python 3.7, as that is the version the script has been
+developed against and tested on. However, any Python version greater than 3.7 _should_
+work as well. Unfortunately, [Pipenv does not support specifying version ranges][2],
+so to use a different Python version you'll have to create a virtualenv manually
+and install the dependencies from the Pipfile using `pip install`.
+
 ## Usage
 
 Note: to run the code inside the virtualenv, use `pipenv run python panopto_dl.py [ARGUMENTS]`.
@@ -48,3 +54,5 @@ For large output resolutions you may want to try encoding using x265. Passing
 at half the file size.
 
 [1]: https://trac.ffmpeg.org/wiki/Encode/H.265 "Encode/H.265 - FFmpeg"
+
+[2]: https://stackoverflow.com/a/63515550/851560
